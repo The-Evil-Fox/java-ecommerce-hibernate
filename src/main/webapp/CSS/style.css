@@ -135,6 +135,19 @@ a {
   display: block;
 }
 
+#error-message-container {
+	text-align: center;
+    background-color: #333;
+    padding: 5vh 5vw;
+    margin: 10vh 10vw;
+    border-radius: 25px;
+    color: #0C60C7;
+}
+
+.error-message {
+	color: #0C60C7;
+}
+
 #produits-liste {
 	margin: 10vh 0;
 }
@@ -181,14 +194,6 @@ a {
 
 .produit-container .produit-informations .button-a, .panier-produit-container .produit-informations .button-a {
     margin: 15px auto;
-}
-
-#error-message-container {
-	text-align: center;
-    background-color: #333;
-    padding: 5vh 5vw;
-    margin: 10vh 10vw;
-    border-radius: 25px;
 }
 
 #panier-container {
@@ -269,20 +274,20 @@ a {
 	margin: 15px auto;
 }
 
-#container-profil, #container-ajout-produit, #connexion-container, #inscription-container {
+#container-profil, #container-ajout-produit, #connexion-container, #inscription-container, #container-modification-produit {
 	margin: 10vh 10vw 10vh 10vw;
     background-color: #333;
     padding: 5vh 5vw;
     border-radius: 25px;
 }
 
-#ajoutproduit .input-group, #connexion-container .input-group, #inscription-container .input-group {
+#ajoutproduit .input-group, #connexion-container .input-group, #inscription-container .input-group, #container-modification-produit .input-group{
 	display: flex;
 	flex-direction: column;
 	margin: 3vh 0;
 }
 
-#ajoutproduit .input-group input, #connexion-container .input-group input, #inscription-container .input-group input {
+#ajoutproduit .input-group input, #connexion-container .input-group input, #inscription-container .input-group input, #container-modification-produit .input-group input {
 	width: 50%;
 	margin: 3vh 0;
 }
@@ -357,10 +362,10 @@ a {
     position: static;
     margin-right: auto;
   }
-  #container-ajout-produit, #connexion-container, #inscription-container {
+  #container-ajout-produit, #connexion-container, #inscription-container, #container-modification-produit {
   	text-align: center;
   }
-  #ajoutproduit .input-group input, #connexion-container .input-group input, #inscription-container .input-group input {
+  #ajoutproduit .input-group input, #connexion-container .input-group input, #inscription-container .input-group input, #container-modification-produit .input-group input {
 	width: 75%;
 	margin: 3vh auto;
   }

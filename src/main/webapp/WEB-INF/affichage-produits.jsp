@@ -34,8 +34,12 @@
 					<c:url value="SupprimerProduit" var="lienSuppressionProduit">
 						<c:param name="id" value="${ produit.getIdentifiant() }"/>
 					</c:url>
+					<c:url value="ModifierProduit" var="lienModificationProduit">
+						<c:param name="id" value="${ produit.getIdentifiant() }"/>
+					</c:url>
 					<a class="button-a" href="${lienAjoutPanier}">Ajouter au panier</a>
 					<c:if test="${user.getPrivileges() == 1 }">
+						<a class="button-a" href="${lienModificationProduit}">Modifier l'article</a>
 						<a class="button-a" href="${lienSuppressionProduit}">Supprimer l'article</a>
 					</c:if>
 				</div>

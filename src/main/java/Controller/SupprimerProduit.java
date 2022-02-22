@@ -56,23 +56,7 @@ public class SupprimerProduit extends HttpServlet {
 		transaction.commit();
 		session.close();
 		sessionFactory.close();
-
-		
-		HttpSession userSession = request.getSession();
-		
-		ListePanier listepanier = new ListePanier();
-		
-		if(userSession.getAttribute("listepanier") != null) {
-		
-			listepanier = (ListePanier) userSession.getAttribute("listepanier");
-			
-		} else {
-			
-			userSession.setAttribute("listepanier", listepanier);
-			
-		}
         
-		request.setAttribute("listepanier", listepanier);
         this.getServletContext().getRequestDispatcher("/AfficherListe").
 		forward(request, response);
 		

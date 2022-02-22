@@ -34,17 +34,17 @@ public class SupprimerPanierFromPanierListe extends HttpServlet {
 		
 		int id = Integer.parseInt(request.getParameter("id"));
 		
-		HttpSession session = request.getSession();
+		HttpSession userSession = request.getSession();
 		
 		ListePanier listepanier = new ListePanier();
 		
-		if(session.getAttribute("listepanier") != null) {
+		if(userSession.getAttribute("listepanier") != null) {
 		
-			listepanier = (ListePanier) session.getAttribute("listepanier");
+			listepanier = (ListePanier) userSession.getAttribute("listepanier");
 			
 		} else {
 			
-			session.setAttribute("listepanier", listepanier);
+			userSession.setAttribute("listepanier", listepanier);
 			
 		}
 		
@@ -66,7 +66,6 @@ public class SupprimerPanierFromPanierListe extends HttpServlet {
 			
 		}
 		
-		request.setAttribute("listepanier", listepanier);
         this.getServletContext().getRequestDispatcher("/WEB-INF/affichage-panier.jsp").
 		forward(request, response);
 		

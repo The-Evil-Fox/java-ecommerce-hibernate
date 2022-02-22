@@ -31,6 +31,15 @@ public class AjoutProduit extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO Auto-generated method stub
+    	
+    	if(request.getParameter("libelle") == null || request.getParameter("cheminimage") == null || request.getParameter("prix") == null) {
+    		
+    		String erreur = "Veuillez remplir touts les champs !";
+    		request.setAttribute("erreur", erreur);
+    		this.getServletContext().getRequestDispatcher("/admin/ajout-produit.jsp").
+    		forward(request, response);
+    		
+    	}
         
     	String libelle = request.getParameter("libelle");
         String cheminimage = request.getParameter("cheminimage");

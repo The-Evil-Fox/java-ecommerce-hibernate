@@ -52,27 +52,35 @@ public class AdminFilter extends HttpFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 		HttpSession session = req.getSession();
-		// on r´ecup`ere le nom de la session
+		// on rï¿½ecup`ere le nom de la session
 		
 		
-		// on r´ecup`ere le chemin demand´e par l’utilisateur
+		// on rï¿½ecup`ere le chemin demandï¿½e par lï¿½utilisateur
 		String chemin = req.getServletPath();
 		String chemin2 = req.getRequestURI();
 		String completeURL = req.getRequestURL().toString();
-		// on r´ecup`ere la m´ethode HTTP utilis´ee (GET ou POST)
+		// on rï¿½ecup`ere la mï¿½ethode HTTP utilisï¿½ee (GET ou POST)
 		String methode = req.getMethod();
 		
 		Utilisateur connectedUser = (Utilisateur) session.getAttribute("user");
 		
-		if(chemin.equals("/AjouterProduit") || chemin.equals("/AjoutProduit")) {
+		if(chemin.equals("/AjouterProduit") || chemin.equals("/AjoutProduit") || chemin.equals("/ModifierProduit") || chemin.equals("/ModificationProduit")) {
 		
-			if(connectedUser.getPrivileges() == 1) {
-				
-				chain.doFilter(request, response);
-				
-			} else {
+			if(connectedUser == null) {
 				
 				res.sendRedirect(req.getContextPath());
+				
+			} else {
+			
+				if(connectedUser.getPrivileges() == 1) {
+					
+					chain.doFilter(request, response);
+					
+				} else {
+					
+					res.sendRedirect(req.getContextPath());
+					
+				}
 				
 			}
 			

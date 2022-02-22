@@ -96,7 +96,6 @@ public class ModifierQuantitePanier extends HttpServlet {
 			
 		}
 		
-		request.setAttribute("listepanier", listepanier);
         this.getServletContext().getRequestDispatcher("/WEB-INF/affichage-panier.jsp").
         forward(request, response);
 		

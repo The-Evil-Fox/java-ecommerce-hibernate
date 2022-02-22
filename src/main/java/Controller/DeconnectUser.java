@@ -30,7 +30,7 @@ public class DeconnectUser extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		HttpSession session = request.getSession();
+		HttpSession userSession = request.getSession();
 		
 		Cookie[] cookies = request.getCookies();
 		
@@ -51,7 +51,7 @@ public class DeconnectUser extends HttpServlet {
 			
 		}
 		
-		session.invalidate();
+		userSession.invalidate();
 	    response.sendRedirect("AfficherListe");
 		
 	}

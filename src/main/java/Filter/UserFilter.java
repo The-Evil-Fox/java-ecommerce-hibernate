@@ -143,7 +143,7 @@ public class UserFilter extends HttpFilter implements Filter {
 			
 		} else {
 			
-			res.sendRedirect(req.getContextPath() + "/AfficherListe");
+			res.sendRedirect(req.getContextPath() + "/index.jsp");
 			
 		}
 		

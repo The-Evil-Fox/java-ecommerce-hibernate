@@ -31,21 +31,6 @@ public class AfficherProfil extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		HttpSession session = request.getSession();
-		
-		ListePanier listepanier = new ListePanier();
-		
-		if(session.getAttribute("listepanier") != null) {
-		
-			listepanier = (ListePanier) session.getAttribute("listepanier");
-			
-		} else {
-			
-			session.setAttribute("listepanier", listepanier);
-			
-		}
-        
-		request.setAttribute("listepanier", listepanier);
         this.getServletContext().getRequestDispatcher("/WEB-INF/affichage-profil.jsp").
 		forward(request, response);
         

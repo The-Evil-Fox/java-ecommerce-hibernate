@@ -1,9 +1,6 @@
 package Controller;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -101,7 +98,7 @@ public class ConnexionUtilisateur extends HttpServlet {
 			
 			String errormessage = "Adresse e-mail ou mot de passe incorrect !";
 			request.setAttribute("erreur", (String) errormessage);
-			this.getServletContext().getRequestDispatcher("/connexion.jsp").
+			this.getServletContext().getRequestDispatcher("/index.jsp").
 			forward(request, response);
 			
 		}

@@ -26,6 +26,9 @@
 			</div>
 			<input class="button-a validationformulaire" type="submit" value="Valider"/>
 		</form>
+		<c:if test="${erreur != null}">
+			<span class="error-message"><c:out value="${erreur}"/></span>
+		</c:if>
 	</div>
 	<%@include file="../../templates/scripts.jsp" %>
 </body>

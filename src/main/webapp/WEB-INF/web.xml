@@ -16,6 +16,18 @@
   	<description></description>
   	<servlet-class>Controller.AjoutProduit</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>ModifierProduit</servlet-name>
+  	<display-name>ModifierProduit</display-name>
+  	<description></description>
+  	<servlet-class>Controller.ModifierProduit</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>ModificationProduit</servlet-name>
+  	<display-name>ModificationProduit</display-name>
+  	<description></description>
+  	<servlet-class>Controller.ModificationProduit</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>InscriptionUtilisateur</servlet-name>
   	<url-pattern>/InscriptionUtilisateur</url-pattern>
@@ -23,5 +35,13 @@
   <servlet-mapping>
   	<servlet-name>AjoutProduit</servlet-name>
   	<url-pattern>/AjoutProduit</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>ModifierProduit</servlet-name>
+  	<url-pattern>/ModifierProduit</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>ModificationProduit</servlet-name>
+  	<url-pattern>/ModificationProduit</url-pattern>
   </servlet-mapping>
 </web-app>
