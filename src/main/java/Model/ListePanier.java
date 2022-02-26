@@ -1,12 +1,8 @@
 package Model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class ListePanier implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class ListePanier {
 	
 	ArrayList<Panier> liste;
 	private int quantiteTotale;

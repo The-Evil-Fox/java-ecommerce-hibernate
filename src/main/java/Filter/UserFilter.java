@@ -24,6 +24,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.Restrictions;
 
 import Model.*;
 
@@ -99,22 +100,27 @@ public class UserFilter extends HttpFilter implements Filter {
 			Transaction transaction = session.beginTransaction();
 			
 			Criteria criteria = session.createCriteria(Utilisateur.class);
+			criteria = criteria.add(Restrictions.eq("email", useremail));
 			List<Utilisateur> listeUtilisateurs = (List<Utilisateur>) criteria.list();
 			
-			for (int i = 0; i < listeUtilisateurs.size(); i++) {
+			transaction.commit();
+			session.close();
+			sessionFactory.close();
+					
+			for(Utilisateur u : listeUtilisateurs) {
 				
-				if(listeUtilisateurs.get(i).getEmail().equals(useremail)) {
-					
-					connectedUser.setNom(listeUtilisateurs.get(i).getNom());
-					connectedUser.setPrenom(listeUtilisateurs.get(i).getPrenom());
-					connectedUser.setEmail(listeUtilisateurs.get(i).getEmail());
-					connectedUser.setPrivileges(listeUtilisateurs.get(i).getPrivileges());
-					break;
-					
-				}
+				connectedUser.setIdentifiant(u.getIdentifiant());
+				connectedUser.setNom(u.getNom());
+				connectedUser.setPrenom(u.getPrenom());
+				connectedUser.setEmail(u.getEmail());
+				connectedUser.setPrivileges(u.getPrivileges());
+				connectedUser.setAdresses(u.getAdresses());
+				break;
 				
 			}
 			
+			ListePanier listepanier = new ListePanier();
+			userSession.setAttribute("listepanier", listepanier);
 			userSession.setAttribute("user", connectedUser);
 			
 		}
@@ -143,7 +149,7 @@ public class UserFilter extends HttpFilter implements Filter {
 			
 		} else {
 			
-			res.sendRedirect(req.getContextPath() + "/index.jsp");
+			res.sendRedirect(req.getContextPath() + "/AfficherListe");
 			
 		}
 		

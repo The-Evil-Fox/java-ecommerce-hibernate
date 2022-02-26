@@ -5,6 +5,7 @@
      </button>
      <div class="dropdown-content">
        <a href="AfficherProfil">Mon profil</a>
+       <a href="AfficherCommandes">Mes commandes</a>
      </div>
    </div>
    <c:if test="${user.getPrivileges() == 1 }">

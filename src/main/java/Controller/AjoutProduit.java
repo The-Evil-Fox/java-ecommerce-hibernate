@@ -54,7 +54,9 @@ public class AjoutProduit extends HttpServlet {
         SessionFactory sessionFactory = configuration.buildSessionFactory();
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        Integer cle = (Integer) session.save(nouveauProduit);
+        session.persist(nouveauProduit);
+        
+        session.flush();
         transaction.commit();
         session.close();
         sessionFactory.close();

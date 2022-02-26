@@ -2,21 +2,16 @@ package Controller;
 
 import java.io.IOException;
 import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
-
-import Model.ListePanier;
 import Model.Produit;
 
 /**
@@ -58,7 +53,12 @@ public class ModifierProduit extends HttpServlet {
 			
 			Criteria criteria = session.createCriteria(Produit.class);
 			criteria = criteria.add(Restrictions.eq("identifiant", idproduit));
+			@SuppressWarnings("unchecked")
 			List<Produit> produits = (List<Produit>) criteria.list();
+			
+			transaction.commit();
+			session.close();
+			sessionFactory.close();
 			
 			for(Produit p : produits) {
 				
@@ -66,15 +66,12 @@ public class ModifierProduit extends HttpServlet {
 				produitToUpdate.setLibelle(p.getLibelle());
 				produitToUpdate.setCheminimage(p.getCheminimage());
 				produitToUpdate.setPrix(p.getPrix());
+				
 			}
 			
 			request.setAttribute("produitToUpdate", produitToUpdate);
 	        this.getServletContext().getRequestDispatcher("/WEB-INF/admin/modifier-produit.jsp").
 			forward(request, response);
-			
-			transaction.commit();
-			session.close();
-			sessionFactory.close();
 			
 		}
 		

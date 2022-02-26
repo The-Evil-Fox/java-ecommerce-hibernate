@@ -28,6 +28,54 @@
   	<description></description>
   	<servlet-class>Controller.ModificationProduit</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>FinalisationCommande</servlet-name>
+  	<display-name>FinalisationCommande</display-name>
+  	<description></description>
+  	<servlet-class>Controller.FinalisationCommande</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>AjoutAdresse</servlet-name>
+  	<display-name>AjoutAdresse</display-name>
+  	<description></description>
+  	<servlet-class>Controller.AjoutAdresse</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>AfficherCommandes</servlet-name>
+  	<display-name>AfficherCommandes</display-name>
+  	<description></description>
+  	<servlet-class>Controller.AfficherCommandes</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>AfficherDetailsCommande</servlet-name>
+  	<display-name>AfficherDetailsCommande</display-name>
+  	<description></description>
+  	<servlet-class>Controller.AfficherDetailsCommande</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>ModifierNomUtilisateur</servlet-name>
+  	<display-name>ModifierNomUtilisateur</display-name>
+  	<description></description>
+  	<servlet-class>Controller.ModifierNomUtilisateur</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>ModifierPrenomUtilisateur</servlet-name>
+  	<display-name>ModifierPrenomUtilisateur</display-name>
+  	<description></description>
+  	<servlet-class>Controller.ModifierPrenomUtilisateur</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>ModifierEmailUtilisateur</servlet-name>
+  	<display-name>ModifierEmailUtilisateur</display-name>
+  	<description></description>
+  	<servlet-class>Controller.ModifierEmailUtilisateur</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>ModifierAdresse</servlet-name>
+  	<display-name>ModifierAdresse</display-name>
+  	<description></description>
+  	<servlet-class>Controller.ModifierAdresse</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>InscriptionUtilisateur</servlet-name>
   	<url-pattern>/InscriptionUtilisateur</url-pattern>
@@ -43,5 +91,37 @@
   <servlet-mapping>
   	<servlet-name>ModificationProduit</servlet-name>
   	<url-pattern>/ModificationProduit</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>FinalisationCommande</servlet-name>
+  	<url-pattern>/FinalisationCommande</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>AjoutAdresse</servlet-name>
+  	<url-pattern>/AjoutAdresse</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>AfficherCommandes</servlet-name>
+  	<url-pattern>/AfficherCommandes</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>AfficherDetailsCommande</servlet-name>
+  	<url-pattern>/AfficherDetailsCommande</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>ModifierNomUtilisateur</servlet-name>
+  	<url-pattern>/ModifierNomUtilisateur</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>ModifierPrenomUtilisateur</servlet-name>
+  	<url-pattern>/ModifierPrenomUtilisateur</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>ModifierEmailUtilisateur</servlet-name>
+  	<url-pattern>/ModifierEmailUtilisateur</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>ModifierAdresse</servlet-name>
+  	<url-pattern>/ModifierAdresse</url-pattern>
   </servlet-mapping>
 </web-app>

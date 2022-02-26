@@ -2,19 +2,16 @@ package Controller;
 
 import java.io.IOException;
 import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-
 import Model.Produit;
 
 /**
@@ -45,9 +42,9 @@ public class AfficherListe extends HttpServlet {
 		Transaction transaction = session.beginTransaction();
 		
 		Criteria criteria = session.createCriteria(Produit.class);
+		@SuppressWarnings("unchecked")
 		List<Produit> liste = (List<Produit>) criteria.list();
 		
-		session.flush();
 		transaction.commit();
 		session.close();
 		sessionFactory.close();

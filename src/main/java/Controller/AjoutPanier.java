@@ -1,24 +1,18 @@
 package Controller;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-
 import Model.ListePanier;
 import Model.Panier;
 import Model.Produit;
@@ -44,6 +38,13 @@ public class AjoutPanier extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
+		if(request.getParameter("id") == null) {
+			
+			this.getServletContext().getRequestDispatcher("/AfficherListe").
+			forward(request, response);
+			
+		}
+		
 		int id = Integer.parseInt(request.getParameter("id"));
 		int quantite = 1;
 		
@@ -56,7 +57,12 @@ public class AjoutPanier extends HttpServlet {
 		Transaction transaction = session.beginTransaction();
 		
 		Criteria criteria = session.createCriteria(Produit.class);
+		@SuppressWarnings("unchecked")
 		List<Produit> liste = (List<Produit>) criteria.list();
+		
+		transaction.commit();
+		session.close();
+		sessionFactory.close();
 		
 		HttpSession userSession = request.getSession();
 		

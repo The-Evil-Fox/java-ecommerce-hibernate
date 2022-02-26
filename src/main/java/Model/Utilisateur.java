@@ -1,13 +1,17 @@
 package Model;
 
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
-public class Utilisateur implements Serializable {
+public class Utilisateur {
 	@Id
 	@GeneratedValue (strategy=GenerationType.IDENTITY)
 	private int identifiant;
@@ -16,14 +20,19 @@ public class Utilisateur implements Serializable {
 	private String password;
 	private String email;
 	private int privileges;
+	@OneToMany(cascade={CascadeType.REMOVE}, fetch=FetchType.EAGER, mappedBy="utilisateur")
+	private List<Adresse> adresses = new ArrayList<Adresse>();
+	@OneToMany(cascade={CascadeType.REMOVE}, mappedBy="utilisateur")
+	private List<Commande> commandes = new ArrayList<Commande>();
 	
 	public Utilisateur() {
 		
 		super();
 		
 	}
-	
-	public Utilisateur(int identifiant, String nom, String prenom, String password, String email, int privileges) {
+
+	public Utilisateur(int identifiant, String nom, String prenom, String password, String email, int privileges,
+			List<Adresse> adresses, List<Commande> commandes) {
 		super();
 		this.identifiant = identifiant;
 		this.nom = nom;
@@ -31,6 +40,8 @@ public class Utilisateur implements Serializable {
 		this.password = password;
 		this.email = email;
 		this.privileges = privileges;
+		this.adresses = adresses;
+		this.commandes = commandes;
 	}
 
 	public int getIdentifiant() {
@@ -81,4 +92,47 @@ public class Utilisateur implements Serializable {
 		this.privileges = privileges;
 	}
 
+	public List<Adresse> getAdresses() {
+		return adresses;
+	}
+
+	public void setAdresses(List<Adresse> adresses) {
+		this.adresses = adresses;
+	}
+	
+	public void addAdresse(Adresse adresse) {
+		adresses.add(adresse);
+		adresse.setUtilisateur(this);
+	}
+	
+	public void removeAdresse(Adresse adresse) {
+		adresses.remove(adresse);
+	}
+
+	public List<Commande> getCommandes() {
+		return commandes;
+	}
+
+	public void setCommandes(List<Commande> commandes) {
+		this.commandes = commandes;
+	}
+	
+	public void addCommande(Commande commande) {
+		commandes.add(commande);
+		commande.setUtilisateur(this);
+	}
+	
+	public void removeCommande(Commande commande) {
+		commandes.remove(commande);
+	}
+
+	@Override
+	public String toString() {
+		return "Utilisateur [identifiant=" + identifiant + ", nom=" + nom + ", prenom=" + prenom + ", password="
+				+ password + ", email=" + email + ", privileges=" + privileges + ", adresses=" + adresses
+				+ ", commandes=" + commandes + "]";
+	}
+	
+	
+	
 }

@@ -10,6 +10,9 @@
 <body>
 	<%@include file="../../templates/navbarAuthentified.jsp" %>
 	<div id="container-ajout-produit">
+		<c:if test="${erreur != null}">
+			<span class="error-message"><c:out value="${erreur}"/></span>
+		</c:if>
 		<h1>Ajouter un nouveau produit</h1>
 		<form method="post" action="AjoutProduit" id="ajoutproduit">
 			<div class="input-group">
@@ -24,11 +27,8 @@
 				<label for="cheminimage">Prix de vente:</label>
 				<input type="text" name="prix" id="prix" required>
 			</div>
-			<input class="button-a validationformulaire" type="submit" value="Valider"/>
+			<input class="button-a" type="submit" value="Valider"/>
 		</form>
-		<c:if test="${erreur != null}">
-			<span class="error-message"><c:out value="${erreur}"/></span>
-		</c:if>
 	</div>
 	<%@include file="../../templates/scripts.jsp" %>
 </body>

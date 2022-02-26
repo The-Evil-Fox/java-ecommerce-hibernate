@@ -32,6 +32,13 @@ public class SupprimerPanierFromPanierListe extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
+		if(request.getParameter("id")  == null) {
+			
+			this.getServletContext().getRequestDispatcher("/AffichePanier").
+			forward(request, response);
+			
+		}
+		
 		int id = Integer.parseInt(request.getParameter("id"));
 		
 		HttpSession userSession = request.getSession();

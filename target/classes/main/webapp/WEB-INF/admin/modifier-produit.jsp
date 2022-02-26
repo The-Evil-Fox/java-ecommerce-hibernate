@@ -27,7 +27,7 @@
 				<label for="cheminimage">Prix de vente:</label>
 				<input type="text" name="prix" id="prix" value="${ produit.getPrix() }" required>
 			</div>
-			<input class="button-a validationformulaire" type="submit" value="Valider"/>
+			<input class="button-a" type="submit" value="Valider"/>
 		</form>
 	</div>
 	<%@include file="../../templates/scripts.jsp" %>

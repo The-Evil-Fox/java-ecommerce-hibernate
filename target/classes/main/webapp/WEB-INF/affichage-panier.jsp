@@ -49,7 +49,7 @@
 						<span>Total à payer: <c:out value="${listepanier.getMontantTotal()} euros"/></span>
 					</div>
 					<div id="buttons-container">
-						<a class="button-a" href="">Finaliser la commande</a>
+						<a class="button-a" href="FinalisationCommande">Finaliser la commande</a>
 						<a class="button-a" href="ViderPanier">Vider le panier</a>
 					</div>
 				</div>

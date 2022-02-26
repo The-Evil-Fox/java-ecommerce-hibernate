@@ -1,20 +1,23 @@
 package Model;
 
-import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
-public class Produit implements Serializable {   //classe public et non final
+public class Produit {   //classe public et non final
 	@Id
 	@GeneratedValue (strategy=GenerationType.IDENTITY)
     private Integer        identifiant;
     private String    libelle;
     private String 	  cheminimage;
     private double    prix; // tous les champs sont private
+    @OneToMany
+    private List<ArticleCommande> articlesCommande;
     
 	public Produit(int identifiant, String libelle, String cheminimage, double prix) {
 		super();
