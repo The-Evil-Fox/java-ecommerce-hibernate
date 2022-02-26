@@ -34,10 +34,18 @@
 					<c:url value="SupprimerProduit" var="lienSuppressionProduit">
 						<c:param name="id" value="${ produit.getIdentifiant() }"/>
 					</c:url>
+					<c:choose>
+						<c:when test="${produit.getQuantitestock() > 0 }">
+							<span class="quantite-stock">En stock: <c:out value="${produit.getQuantitestock() }"/></span>
+							<a class="button-a" href="${lienAjoutPanier}">Ajouter au panier</a>
+						</c:when>
+						<c:otherwise>
+							<span class="error-message">En rupture de stock !</span>
+						</c:otherwise>
+					</c:choose>
 					<c:url value="ModifierProduit" var="lienModificationProduit">
 						<c:param name="id" value="${ produit.getIdentifiant() }"/>
 					</c:url>
-					<a class="button-a" href="${lienAjoutPanier}">Ajouter au panier</a>
 					<c:if test="${user.getPrivileges() == 1 }">
 						<a class="button-a" href="${lienModificationProduit}">Modifier l'article</a>
 						<a class="button-a" href="${lienSuppressionProduit}">Supprimer l'article</a>

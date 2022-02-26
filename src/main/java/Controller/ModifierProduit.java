@@ -66,6 +66,7 @@ public class ModifierProduit extends HttpServlet {
 				produitToUpdate.setLibelle(p.getLibelle());
 				produitToUpdate.setCheminimage(p.getCheminimage());
 				produitToUpdate.setPrix(p.getPrix());
+				produitToUpdate.setQuantitestock(p.getQuantitestock());
 				
 			}
 			

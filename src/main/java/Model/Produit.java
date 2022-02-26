@@ -16,21 +16,21 @@ public class Produit {   //classe public et non final
     private String    libelle;
     private String 	  cheminimage;
     private double    prix; // tous les champs sont private
+    private int quantitestock;
     @OneToMany
     private List<ArticleCommande> articlesCommande;
     
-	public Produit(int identifiant, String libelle, String cheminimage, double prix) {
+	public Produit(int identifiant, String libelle, String cheminimage, double prix, int quantitestock) {
 		super();
 		this.identifiant = identifiant;
 		this.libelle = libelle;
 		this.cheminimage = cheminimage;
 		this.prix = prix;
+		this.quantitestock = quantitestock;
 	}
     
     public Produit() {
-    	
     	super();
-    	
     }
 
 	public int getIdentifiant() {
@@ -61,8 +61,26 @@ public class Produit {   //classe public et non final
 		return prix;
 	}
 
+	public int getQuantitestock() {
+		return quantitestock;
+	}
+
+	public void setQuantitestock(int quantitestock) {
+		this.quantitestock = quantitestock;
+	}
+
+	public void setIdentifiant(Integer identifiant) {
+		this.identifiant = identifiant;
+	}
+
 	public void setPrix(double prix) {
 		this.prix = prix;
+	}
+
+	@Override
+	public String toString() {
+		return "Produit [identifiant=" + identifiant + ", libelle=" + libelle + ", cheminimage=" + cheminimage
+				+ ", prix=" + prix + ", quantitestock=" + quantitestock + "]";
 	}
     
     

@@ -31,7 +31,8 @@ public class ModificationProduit extends HttpServlet {
 		// TODO Auto-generated method stub
 		
 		if(request.getParameter("id") == null || request.getParameter("libelle") == null
-				|| request.getParameter("cheminimage") == null || request.getParameter("prix") == null) {
+				|| request.getParameter("cheminimage") == null || request.getParameter("prix") == null 
+				|| request.getParameter("quantite") == null) {
 			
 	        this.getServletContext().getRequestDispatcher("/AfficherListe").
 			forward(request, response);
@@ -42,6 +43,7 @@ public class ModificationProduit extends HttpServlet {
 		String libelle = request.getParameter("libelle");
 		String cheminimage = request.getParameter("cheminimage");
 		double prix = Double.parseDouble(request.getParameter("prix"));
+		int quantite = Integer.parseInt(request.getParameter("quantite"));
 		
 		
 		Configuration configuration = new Configuration().configure();
@@ -54,7 +56,10 @@ public class ModificationProduit extends HttpServlet {
 		produitToUpdate.setLibelle(libelle);
 		produitToUpdate.setCheminimage(cheminimage);
 		produitToUpdate.setPrix(prix);
+		produitToUpdate.setQuantitestock(quantite);
 		
+		session.persist(produitToUpdate);
+		session.flush();
 		session.close();
 		sessionFactory.close();
 		

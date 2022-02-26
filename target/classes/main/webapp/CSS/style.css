@@ -149,10 +149,11 @@ input:focus {
 #error-message-container {
 	text-align: center;
     background-color: #333;
-    padding: 5vh 5vw;
+    padding: 3vh 1vw;
     margin: 10vh 10vw;
     border-radius: 25px;
     color: #2E89F9;
+    font-size: 12px;
 }
 
 .error-message {

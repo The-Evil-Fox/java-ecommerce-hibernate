@@ -7,9 +7,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 import Model.ListePanier;
 import Model.Panier;
+import Model.Produit;
 
 /**
  * Servlet implementation class ModifierQuantitePanier
@@ -58,14 +61,34 @@ public class ModifierQuantitePanier extends HttpServlet {
 		
 		if(operation.equals("increment")) {
 			
+			Configuration configuration = new Configuration().configure();
+			SessionFactory sessionFactory = configuration.buildSessionFactory();
+			Session session = sessionFactory.openSession();
+			
 			for(Panier p : listepanier.getListe()) {
 				
 				if(p.getProduit().getIdentifiant() == idPanier) {
 					
-					p.setQuantite(p.getQuantite() +1);
-					listepanier.setQuantiteTotale(listepanier.getQuantiteTotale() +1);
-					listepanier.setMontantTotal(listepanier.getMontantTotal() + p.getProduit().getPrix());
-					break;
+					Produit produitStock = session.get(Produit.class, p.getProduit().getIdentifiant());
+					
+					session.close();
+			        sessionFactory.close();
+					
+					if(produitStock.getQuantitestock() - (p.getQuantite() + 1) >= 0 ) {
+					
+						p.setQuantite(p.getQuantite() + 1);
+						listepanier.setQuantiteTotale(listepanier.getQuantiteTotale() +1);
+						listepanier.setMontantTotal(listepanier.getMontantTotal() + p.getProduit().getPrix());
+						break;
+						
+					} else {
+						
+						String errormessage = "La quantité demandée est supérieure à celle disponible en stock !";
+						request.setAttribute("erreur", (String) errormessage);
+						this.getServletContext().getRequestDispatcher("/AffichePanier").
+						forward(request, response);
+						
+					}
 					
 				}
 				

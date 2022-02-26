@@ -32,7 +32,7 @@ public class AjoutProduit extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO Auto-generated method stub
     	
-    	if(request.getParameter("libelle") == null || request.getParameter("cheminimage") == null || request.getParameter("prix") == null) {
+    	if(request.getParameter("libelle") == null || request.getParameter("cheminimage") == null || request.getParameter("prix") == null || request.getParameter("quantite") == null) {
     		
     		String erreur = "Veuillez remplir touts les champs !";
     		request.setAttribute("erreur", erreur);
@@ -44,19 +44,21 @@ public class AjoutProduit extends HttpServlet {
     	String libelle = request.getParameter("libelle");
         String cheminimage = request.getParameter("cheminimage");
         double prix = Double.parseDouble(request.getParameter("prix"));
+        int quantite = Integer.parseInt(request.getParameter("quantite"));
         
         Produit nouveauProduit = new Produit();
         nouveauProduit.setLibelle(libelle);
         nouveauProduit.setCheminimage(cheminimage);
         nouveauProduit.setPrix(prix);
+        nouveauProduit.setQuantitestock(quantite);
         
         Configuration configuration = new Configuration().configure();
         SessionFactory sessionFactory = configuration.buildSessionFactory();
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
+        
         session.persist(nouveauProduit);
         
-        session.flush();
         transaction.commit();
         session.close();
         sessionFactory.close();

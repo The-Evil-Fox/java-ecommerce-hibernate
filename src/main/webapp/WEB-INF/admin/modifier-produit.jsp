@@ -24,8 +24,12 @@
 				<input type="text" name="cheminimage" id="cheminimage" value="${ produit.getCheminimage() }" required>
 			</div>
 			<div class="input-group">
-				<label for="cheminimage">Prix de vente:</label>
+				<label for="prix">Prix de vente unitaire:</label>
 				<input type="text" name="prix" id="prix" value="${ produit.getPrix() }" required>
+			</div>
+			<div class="input-group">
+				<label for="quantite">Quantite en stock:</label>
+				<input type="text" name="quantite" id="quantite" value="${ produit.getQuantitestock() }" required>
 			</div>
 			<input class="button-a" type="submit" value="Valider"/>
 		</form>

@@ -42,8 +42,7 @@ public class ModifierEmailUtilisateur extends HttpServlet {
 			String nouvelleEmail = request.getParameter("email");
 			
 			Configuration configuration = new Configuration().configure();
-			SessionFactory sessionFactory = configuration.
-			buildSessionFactory();
+			SessionFactory sessionFactory = configuration.buildSessionFactory();
 			Session session = sessionFactory.openSession();
 			Transaction transaction = session.beginTransaction();
 			

@@ -10,10 +10,13 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+
+import Model.Adresse;
 import Model.ArticleCommande;
 import Model.Commande;
 import Model.ListePanier;
 import Model.Panier;
+import Model.Produit;
 import Model.Utilisateur;
 
 /**
@@ -42,6 +45,36 @@ public class FinalisationCommande extends HttpServlet {
 		Utilisateur connectedUser = (Utilisateur) userSession.getAttribute("user");
 		ListePanier listepanier = (ListePanier) userSession.getAttribute("listepanier");
 		
+		if(connectedUser.getAdresses().isEmpty()) {
+			
+			String errormessage = "Veuillez ajouter une adresse de livraison avant de finaliser votre commande !";
+			request.setAttribute("erreur", (String) errormessage);
+			this.getServletContext().getRequestDispatcher("/AffichePanier").
+			forward(request, response);
+			
+		}
+		
+		boolean adresseLivraisonIsSet = false;
+		
+		for(Adresse a : connectedUser.getAdresses()) {
+			
+			if(a.isAdresselivraison() == true) {
+				
+				adresseLivraisonIsSet = true;
+				break;
+			}
+			
+		}
+		
+		if(adresseLivraisonIsSet == false) {
+			
+			String errormessage = "Veuillez définir une adresse de livraison avant de finaliser votre commande !";
+			request.setAttribute("erreur", (String) errormessage);
+			this.getServletContext().getRequestDispatcher("/AffichePanier").
+			forward(request, response);
+			
+		}
+		
 		Configuration configuration = new Configuration().configure();
         SessionFactory sessionFactory = configuration.buildSessionFactory();
         Session session = sessionFactory.openSession();
@@ -54,9 +87,14 @@ public class FinalisationCommande extends HttpServlet {
 		for(Panier p : listepanier.getListe()) {
 			
 			ArticleCommande articleCommande = new ArticleCommande(commande, p.getProduit(), p.getQuantite(), p.getProduit().getPrix() * p.getQuantite());
-			commande.addArticlesCommande(articleCommande);
-			session.persist(articleCommande);
 			
+			Produit produitToUpdate = session.get(Produit.class, p.getProduit().getIdentifiant());
+			produitToUpdate.setQuantitestock(produitToUpdate.getQuantitestock() - p.getQuantite());
+			
+			commande.addArticlesCommande(articleCommande);
+			
+			session.persist(articleCommande);
+			session.persist(produitToUpdate);
 		}
 		
 		Utilisateur user = session.get(Utilisateur.class, connectedUser.getIdentifiant());

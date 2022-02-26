@@ -14,10 +14,15 @@
 		<c:when test="${listepanier.getQuantiteTotale() == 0 }">
 			<div id="error-message-container">
 				<h1>Votre panier est vide !</h1>
-				<a class="button-a" href="AfficherListe">Retourner sur le catalogue</a>
+				<a href="AfficherListe"><button class="button-a">Retourner sur le catalogue</button></a>
 			</div>
 		</c:when>
 		<c:otherwise>
+			<c:if test="${erreur != null }">
+				<div id="error-message-container">
+					<h1><c:out value="${erreur}"/></h1>
+				</div>
+			</c:if>
 			<div id="panier-container">
 				<div id="panier-liste">
 					<c:forEach items="${ listepanier.getListe() }" var="panier">
