@@ -11,7 +11,7 @@ public class ArticleCommande {
 	
 	@Id
 	@GeneratedValue (strategy=GenerationType.IDENTITY)
-	private int identifiant;
+	private Integer identifiant;
 	@ManyToOne
 	private Commande commande;
 	@ManyToOne

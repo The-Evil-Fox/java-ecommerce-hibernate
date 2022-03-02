@@ -7,9 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import Config.HibernateUtil;
+import DAO.AdresseDao;
 import Model.Adresse;
 import Model.Utilisateur;
 
@@ -43,20 +42,37 @@ public class ModifierAdresse extends HttpServlet {
 			String adresse = request.getParameter("adresse");
 			String action = request.getParameter("action");
 			
-			Configuration configuration = new Configuration().configure();
-			SessionFactory sessionFactory = configuration.
-			buildSessionFactory();
-			Session session = sessionFactory.openSession();
-			Transaction transaction = session.beginTransaction();
-			
 			HttpSession userSession = request.getSession();
+			
+			Session session = HibernateUtil.getSessionFactory().openSession();
 			
 			Utilisateur connectedUser = (Utilisateur) userSession.getAttribute("user");
 			
 			if(action.equals("delete")) {
 				
-				Adresse adresseToDelete = session.get(Adresse.class, adresse);
-				session.delete(adresseToDelete);
+				AdresseDao adresseDao = new AdresseDao(session);
+				
+				Adresse adresseInDb = null;
+				
+				try {
+					
+					adresseInDb = adresseDao.findByRue(adresse);
+					
+					if(adresseInDb == null) {
+						
+						session.close();
+						this.getServletContext().getRequestDispatcher("/AfficherProfil").
+						forward(request, response);
+						
+					}
+					
+					adresseDao.delete(adresseInDb);
+					
+				} catch (Exception e) {
+					
+					e.printStackTrace();
+				
+				}
 				
 				for(Adresse a : connectedUser.getAdresses()) {
 					
@@ -74,33 +90,32 @@ public class ModifierAdresse extends HttpServlet {
 				
 			} else if(action.equals("setAdresseLivraison")) {
 				
+				// Modification données db
 				
-				// Modification base de données
+				AdresseDao adresseDao = new AdresseDao(session);
 				
+				Adresse adresseInDb = null;
 				
-				Utilisateur user = session.get(Utilisateur.class, connectedUser.getIdentifiant());
-				
-				Adresse adresseToSet = session.get(Adresse.class, adresse);
-				adresseToSet.setAdresselivraison(true);
-				
-				for(Adresse a : user.getAdresses()) {
+				try {
 					
-					if(a.isAdresselivraison() == true && !a.getRue().equals(adresse)) {
+					adresseInDb = adresseDao.findByRue(adresse);
+					
+					if(adresseInDb == null) {
 						
-						a.setAdresselivraison(false);
+						session.close();
+						this.getServletContext().getRequestDispatcher("/AfficherProfil").
+						forward(request, response);
 						
 					}
 					
-					if(a.getRue().equals(adresse)) {
-						
-						a.setAdresselivraison(true);
-						
-					}
+					adresseInDb.setAdresselivraison(true);
+					adresseDao.save(adresseInDb);
 					
+				} catch (Exception e) {
+					
+					e.printStackTrace();
+				
 				}
-				
-				session.persist(user);
-				session.persist(adresseToSet);
 				
 				// Modification session utilisateur
 				
@@ -120,13 +135,9 @@ public class ModifierAdresse extends HttpServlet {
 					
 				}
 				
-				
-				
 			}
 			
-			transaction.commit();
-	        session.close();
-	        sessionFactory.close();
+			session.close();
 			
 			this.getServletContext().getRequestDispatcher("/AfficherProfil").
 			forward(request, response);

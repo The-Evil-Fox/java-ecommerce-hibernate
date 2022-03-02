@@ -1,17 +1,13 @@
 package Controller;
 
 import java.io.IOException;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.criterion.Restrictions;
+import Config.HibernateUtil;
+import DAO.ProduitDao;
 import Model.Produit;
 
 /**
@@ -45,30 +41,37 @@ public class ModifierProduit extends HttpServlet {
 			
 			Produit produitToUpdate = new Produit();
 			
-			Configuration configuration = new Configuration().configure();
-			SessionFactory sessionFactory = configuration.
-			buildSessionFactory();
-			Session session = sessionFactory.openSession();
-			Transaction transaction = session.beginTransaction();
+			Session session = HibernateUtil.getSessionFactory().openSession();
 			
-			Criteria criteria = session.createCriteria(Produit.class);
-			criteria = criteria.add(Restrictions.eq("identifiant", idproduit));
-			@SuppressWarnings("unchecked")
-			List<Produit> produits = (List<Produit>) criteria.list();
+			ProduitDao produitDao = new ProduitDao(session);
 			
-			transaction.commit();
-			session.close();
-			sessionFactory.close();
+			Produit produitInDb = null;
 			
-			for(Produit p : produits) {
+			try {
 				
-				produitToUpdate.setIdentifiant(p.getIdentifiant());
-				produitToUpdate.setLibelle(p.getLibelle());
-				produitToUpdate.setCheminimage(p.getCheminimage());
-				produitToUpdate.setPrix(p.getPrix());
-				produitToUpdate.setQuantitestock(p.getQuantitestock());
+				produitInDb = produitDao.findById(idproduit);
 				
+				if(produitInDb == null) {
+					
+					session.close();
+					this.getServletContext().getRequestDispatcher("/AfficherProfil").
+					forward(request, response);
+					
+				}
+				
+			} catch (Exception e) {
+				
+				e.printStackTrace();
+			
 			}
+			
+			session.close();
+				
+			produitToUpdate.setIdentifiant(produitInDb.getIdentifiant());
+			produitToUpdate.setLibelle(produitInDb.getLibelle());
+			produitToUpdate.setCheminimage(produitInDb.getCheminimage());
+			produitToUpdate.setPrix(produitInDb.getPrix());
+			produitToUpdate.setQuantitestock(produitInDb.getQuantitestock());
 			
 			request.setAttribute("produitToUpdate", produitToUpdate);
 	        this.getServletContext().getRequestDispatcher("/WEB-INF/admin/modifier-produit.jsp").

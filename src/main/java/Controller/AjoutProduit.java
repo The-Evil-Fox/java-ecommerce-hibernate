@@ -5,12 +5,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-
+import Config.HibernateUtil;
+import DAO.ProduitDao;
 import Model.Produit;
 
 /**
@@ -32,7 +29,9 @@ public class AjoutProduit extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO Auto-generated method stub
     	
-    	if(request.getParameter("libelle") == null || request.getParameter("cheminimage") == null || request.getParameter("prix") == null || request.getParameter("quantite") == null) {
+    	if(request.getParameter("libelle") == null || request.getParameter("cheminimage") == null || 
+    			request.getParameter("prix") == null || request.getParameter("quantite") == null || 
+    			request.getParameter("miseenvente") == null ) {
     		
     		String erreur = "Veuillez remplir touts les champs !";
     		request.setAttribute("erreur", erreur);
@@ -45,23 +44,40 @@ public class AjoutProduit extends HttpServlet {
         String cheminimage = request.getParameter("cheminimage");
         double prix = Double.parseDouble(request.getParameter("prix"));
         int quantite = Integer.parseInt(request.getParameter("quantite"));
+        boolean miseenvente = false;
+        
+        if(request.getParameter("miseenvente") != null) {
+        	
+        	miseenvente = true;
+        	
+        }
         
         Produit nouveauProduit = new Produit();
         nouveauProduit.setLibelle(libelle);
         nouveauProduit.setCheminimage(cheminimage);
         nouveauProduit.setPrix(prix);
         nouveauProduit.setQuantitestock(quantite);
+        nouveauProduit.setEnvente(miseenvente);
         
-        Configuration configuration = new Configuration().configure();
-        SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
         
-        session.persist(nouveauProduit);
+        Session session = HibernateUtil.getSessionFactory().openSession();
         
-        transaction.commit();
-        session.close();
-        sessionFactory.close();
+        ProduitDao produitDao = new ProduitDao(session);
+        
+		@SuppressWarnings("unused")
+		int cle;
+        
+		try {
+			
+			cle = produitDao.save(nouveauProduit);
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			
+		}
+		
+		session.close();
         
         this.getServletContext().getRequestDispatcher("/AfficherListe").
 		forward(request, response);

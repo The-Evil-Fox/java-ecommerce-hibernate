@@ -7,12 +7,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.criterion.Restrictions;
+import Config.HibernateUtil;
+import DAO.CommandeDao;
 import Model.Commande;
 import Model.Utilisateur;
 
@@ -38,21 +35,15 @@ public class AfficherCommandes extends HttpServlet {
 		
 		HttpSession userSession = request.getSession();
 		
-		Configuration configuration = new Configuration().configure();
-        SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-		
 		Utilisateur connectedUser = (Utilisateur) userSession.getAttribute("user");
 		
-		Criteria criteria = session.createCriteria(Commande.class);
-		criteria = criteria.add(Restrictions.eq("utilisateur.identifiant", connectedUser.getIdentifiant()));
-		@SuppressWarnings("unchecked")
-		List<Commande> commandes = (List<Commande>) criteria.list();
+		Session session = HibernateUtil.getSessionFactory().openSession();
+	    
+	    CommandeDao commandeDao = new CommandeDao(session);
 		
-        transaction.commit();
-        session.close();
-        sessionFactory.close();
+		List<Commande> commandes = commandeDao.getCommandesFromUser(connectedUser.getIdentifiant());
+		
+		session.close();
 		
 		request.setAttribute("commandes", commandes);
 		this.getServletContext().getRequestDispatcher("/WEB-INF/affichage-commandes.jsp").

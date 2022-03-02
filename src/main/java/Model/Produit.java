@@ -17,16 +17,18 @@ public class Produit {   //classe public et non final
     private String 	  cheminimage;
     private double    prix; // tous les champs sont private
     private int quantitestock;
+    private boolean envente;
     @OneToMany
     private List<ArticleCommande> articlesCommande;
     
-	public Produit(int identifiant, String libelle, String cheminimage, double prix, int quantitestock) {
+	public Produit(int identifiant, String libelle, String cheminimage, double prix, int quantitestock, boolean envente) {
 		super();
 		this.identifiant = identifiant;
 		this.libelle = libelle;
 		this.cheminimage = cheminimage;
 		this.prix = prix;
 		this.quantitestock = quantitestock;
+		this.envente = envente;
 	}
     
     public Produit() {
@@ -77,12 +79,19 @@ public class Produit {   //classe public et non final
 		this.prix = prix;
 	}
 
+	public boolean isEnvente() {
+		return envente;
+	}
+
+	public void setEnvente(boolean envente) {
+		this.envente = envente;
+	}
+
 	@Override
 	public String toString() {
 		return "Produit [identifiant=" + identifiant + ", libelle=" + libelle + ", cheminimage=" + cheminimage
-				+ ", prix=" + prix + ", quantitestock=" + quantitestock + "]";
+				+ ", prix=" + prix + ", quantitestock=" + quantitestock + ", envente=" + envente + ", articlesCommande="
+				+ articlesCommande + "]";
 	}
-    
-    
 
 }

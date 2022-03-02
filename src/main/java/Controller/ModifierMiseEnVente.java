@@ -2,27 +2,26 @@ package Controller;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-import Model.*;
+
+import Config.HibernateUtil;
+import DAO.ProduitDao;
+import Model.Produit;
 
 /**
- * Servlet implementation class SupprimerProduit
+ * Servlet implementation class ModifierMiseEnVente
  */
-@WebServlet("/SupprimerProduit")
-public class SupprimerProduit extends HttpServlet {
+public class ModifierMiseEnVente extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public SupprimerProduit() {
+    public ModifierMiseEnVente() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -33,7 +32,7 @@ public class SupprimerProduit extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		if(request.getParameter("id")  == null) {
+		if(request.getParameter("id")  == null && request.getParameter("method") == null) {
 			
 			this.getServletContext().getRequestDispatcher("/AfficherListe").
 			forward(request, response);
@@ -41,20 +40,37 @@ public class SupprimerProduit extends HttpServlet {
 		}
 		
 		int idproduit = Integer.parseInt(request.getParameter("id"));
+		String method = request.getParameter("method");
 		
-		Configuration configuration = new Configuration().configure();
-		SessionFactory sessionFactory = configuration.
-		buildSessionFactory();
-		Session session = sessionFactory.openSession();
-		Transaction transaction = session.beginTransaction();
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		
-		Produit produit = session.get(Produit.class, idproduit);
-		session.delete(produit);
-		transaction.commit();
+		ProduitDao produitDao = new ProduitDao(session);
+		
+		Produit produit = produitDao.findById(idproduit);
+		
+		if(method.equals("ajout")) {
+			
+			produit.setEnvente(true);
+			
+		} else if(method.equals("retrait")) {
+			
+			produit.setEnvente(false);
+			
+		}
+		
+		try {
+			
+			produitDao.save(produit);
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			
+		}
+		
 		session.close();
-		sessionFactory.close();
-        
-        this.getServletContext().getRequestDispatcher("/AfficherListe").
+		
+		this.getServletContext().getRequestDispatcher("/AfficherListe").
 		forward(request, response);
 		
 	}

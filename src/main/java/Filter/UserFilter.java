@@ -1,11 +1,6 @@
 package Filter;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -18,19 +13,15 @@ import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.criterion.Restrictions;
-
+import Config.HibernateUtil;
+import DAO.UtilisateurDao;
 import Model.*;
 
 /**
  * Servlet Filter implementation class UserFilter
  */
+@SuppressWarnings("serial")
 @WebFilter("/*")
 public class UserFilter extends HttpFilter implements Filter {
        
@@ -93,31 +84,20 @@ public class UserFilter extends HttpFilter implements Filter {
 		if(!useremail.equals("")) {
 			
 			
-			Configuration configuration = new Configuration().configure();
-			SessionFactory sessionFactory = configuration.
-			buildSessionFactory();
-			Session session = sessionFactory.openSession();
-			Transaction transaction = session.beginTransaction();
+			Session session = HibernateUtil.getSessionFactory().openSession();
+		    
+		    UtilisateurDao utilisateurDao = new UtilisateurDao(session);
 			
-			Criteria criteria = session.createCriteria(Utilisateur.class);
-			criteria = criteria.add(Restrictions.eq("email", useremail));
-			List<Utilisateur> listeUtilisateurs = (List<Utilisateur>) criteria.list();
+			Utilisateur utilisateur = utilisateurDao.ConnectUserWithCookie(useremail);
 			
-			transaction.commit();
 			session.close();
-			sessionFactory.close();
-					
-			for(Utilisateur u : listeUtilisateurs) {
-				
-				connectedUser.setIdentifiant(u.getIdentifiant());
-				connectedUser.setNom(u.getNom());
-				connectedUser.setPrenom(u.getPrenom());
-				connectedUser.setEmail(u.getEmail());
-				connectedUser.setPrivileges(u.getPrivileges());
-				connectedUser.setAdresses(u.getAdresses());
-				break;
-				
-			}
+			
+			connectedUser.setIdentifiant(utilisateur.getIdentifiant());
+			connectedUser.setNom(utilisateur.getNom());
+			connectedUser.setPrenom(utilisateur.getPrenom());
+			connectedUser.setEmail(utilisateur.getEmail());
+			connectedUser.setPrivileges(utilisateur.getPrivileges());
+			connectedUser.setAdresses(utilisateur.getAdresses());
 			
 			ListePanier listepanier = new ListePanier();
 			userSession.setAttribute("listepanier", listepanier);
@@ -152,7 +132,6 @@ public class UserFilter extends HttpFilter implements Filter {
 			res.sendRedirect(req.getContextPath() + "/AfficherListe");
 			
 		}
-		
 		
 	}
 

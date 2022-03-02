@@ -11,16 +11,21 @@
 <body>
 	<%@include file="../templates/navbarAuthentified.jsp" %>
 	<c:choose>
-		<c:when test="${listepanier.getQuantiteTotale() == 0 }">
+		<c:when test="${listepanier.getQuantiteTotale() == 0 && erreur == null }">
 			<div id="error-message-container">
-				<h1>Votre panier est vide !</h1>
+				<h1 class="error-message">Votre panier est vide !</h1>
 				<a href="AfficherListe"><button class="button-a">Retourner sur le catalogue</button></a>
+			</div>
+		</c:when>
+		<c:when test="${listepanier.getQuantiteTotale() == 0 && erreur != null }">
+			<div id="error-message-container">
+				<h1 class="error-message"><c:out value="${erreur}"/></h1>
 			</div>
 		</c:when>
 		<c:otherwise>
 			<c:if test="${erreur != null }">
 				<div id="error-message-container">
-					<h1><c:out value="${erreur}"/></h1>
+					<h1 class="error-message"><c:out value="${erreur}"/></h1>
 				</div>
 			</c:if>
 			<div id="panier-container">

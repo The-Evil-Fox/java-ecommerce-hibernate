@@ -8,11 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import Config.HibernateUtil;
+import DAO.CommandeDao;
 import Model.ArticleCommande;
 import Model.Produit;
 import Model.Utilisateur;
@@ -48,27 +46,15 @@ public class AfficherDetailsCommande extends HttpServlet {
 		
 		HttpSession userSession = request.getSession();
 		
-		Configuration configuration = new Configuration().configure();
-        SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-		
 		Utilisateur connectedUser = (Utilisateur) userSession.getAttribute("user");
 		
-		String SQLQuery = "SELECT p.libelle, p.prix, p.cheminimage, ac.prixtotal, ac.quantite FROM produit p"
-				+ "	LEFT JOIN articlecommande ac on p.identifiant = ac.produit_identifiant"
-				+ " LEFT JOIN commande c on ac.commande_identifiant = c.identifiant"
-				+ " WHERE ac.commande_identifiant = :idcommande AND c.utilisateur_identifiant = :iduser";
-
-		SQLQuery query = session.createSQLQuery(SQLQuery);
-		query.setParameter("idcommande", idcommande);
-		query.setParameter("iduser", connectedUser.getIdentifiant());
-		@SuppressWarnings("unchecked")
-		List<Object[]> donnees = (List<Object[]>) query.list();
+		Session session = HibernateUtil.getSessionFactory().openSession();
+	    
+	    CommandeDao commandeDao = new CommandeDao(session);
 		
-		transaction.commit();
-		session.close();
-		sessionFactory.close();
+	    List<Object[]> donnees = commandeDao.getDetailsCommande(idcommande, connectedUser.getIdentifiant());
+	    
+	    session.close();
 		
 		List<Produit> produits = new ArrayList<Produit>();
 		List<ArticleCommande> articles = new ArrayList<ArticleCommande>();

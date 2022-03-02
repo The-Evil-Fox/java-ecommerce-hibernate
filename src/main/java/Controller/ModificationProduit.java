@@ -6,8 +6,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import Config.HibernateUtil;
+import DAO.ProduitDao;
 import Model.Produit;
 
 /**
@@ -45,23 +45,38 @@ public class ModificationProduit extends HttpServlet {
 		double prix = Double.parseDouble(request.getParameter("prix"));
 		int quantite = Integer.parseInt(request.getParameter("quantite"));
 		
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		
-		Configuration configuration = new Configuration().configure();
-		SessionFactory sessionFactory = configuration.
-		buildSessionFactory();
-		Session session = sessionFactory.openSession();
+		ProduitDao produitDao = new ProduitDao(session);
 		
-		Produit produitToUpdate = session.get(Produit.class, idproduit);
+		Produit produitToUpdate = null;
 		
-		produitToUpdate.setLibelle(libelle);
-		produitToUpdate.setCheminimage(cheminimage);
-		produitToUpdate.setPrix(prix);
-		produitToUpdate.setQuantitestock(quantite);
+		try {
+			
+			produitToUpdate = produitDao.findById(idproduit);
+			
+			if(produitToUpdate == null) {
+				
+				session.close();
+				this.getServletContext().getRequestDispatcher("/afficherListe").
+				forward(request, response);
+				
+			}
+			
+			produitToUpdate.setLibelle(libelle);
+			produitToUpdate.setCheminimage(cheminimage);
+			produitToUpdate.setPrix(prix);
+			produitToUpdate.setQuantitestock(quantite);
+			
+			produitDao.save(produitToUpdate);
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
 		
-		session.persist(produitToUpdate);
-		session.flush();
+		}
+		
 		session.close();
-		sessionFactory.close();
 		
 		this.getServletContext().getRequestDispatcher("/AfficherListe").
 		forward(request, response);

@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import Config.HibernateUtil;
+import DAO.ProduitDao;
 import Model.ListePanier;
 import Model.Panier;
 import Model.Produit;
@@ -61,18 +61,18 @@ public class ModifierQuantitePanier extends HttpServlet {
 		
 		if(operation.equals("increment")) {
 			
-			Configuration configuration = new Configuration().configure();
-			SessionFactory sessionFactory = configuration.buildSessionFactory();
-			Session session = sessionFactory.openSession();
-			
 			for(Panier p : listepanier.getListe()) {
 				
 				if(p.getProduit().getIdentifiant() == idPanier) {
 					
-					Produit produitStock = session.get(Produit.class, p.getProduit().getIdentifiant());
+					Session session = HibernateUtil.getSessionFactory().openSession();
+			        
+			        ProduitDao produitDao = new ProduitDao(session);
+			        
+					
+					Produit produitStock = produitDao.findById(p.getProduit().getIdentifiant());
 					
 					session.close();
-			        sessionFactory.close();
 					
 					if(produitStock.getQuantitestock() - (p.getQuantite() + 1) >= 0 ) {
 					

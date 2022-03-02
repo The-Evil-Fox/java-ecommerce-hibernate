@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import Config.HibernateUtil;
+import DAO.UtilisateurDao;
+import DAO.AdresseDao;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 import Model.Adresse;
 import Model.ListePanier;
 import Model.Utilisateur;
@@ -32,7 +32,8 @@ public class InscriptionUtilisateur extends HttpServlet {
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @SuppressWarnings("unused")
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO Auto-generated method stub
         //response.getWriter().append("Served at: ").append(request.getContextPath());
     	
@@ -60,13 +61,11 @@ public class InscriptionUtilisateur extends HttpServlet {
         connectedUser.setPassword(password);
         connectedUser.setPrivileges(1);
         
-        Configuration configuration = new Configuration().configure();
-        SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
+        Session session = HibernateUtil.getSessionFactory().openSession();
         
         if(!request.getParameter("rue").equals("") && (request.getParameter("ville").equals("") || request.getParameter("cp").equals(""))) {
         	
+        	session.close();
         	String errormessage = "Veuillez saisir votre adresse de livraison complète !";
 			request.setAttribute("erreur", (String) errormessage);
 			this.getServletContext().getRequestDispatcher("/inscription.jsp").
@@ -82,12 +81,25 @@ public class InscriptionUtilisateur extends HttpServlet {
             
             connectedUser.addAdresse(userAdresse);
             
-            session.persist(userAdresse);
+            AdresseDao adresseDao = new AdresseDao(session);
+            
+            String cle;
+            
+    		try {
+    			
+    			cle = adresseDao.save(userAdresse);
+    			
+    		} catch (Exception e) {
+    			
+    			e.printStackTrace();
+    			
+    		}
         	
         }
         
         if(!password.equals(password2)) {
         	
+        	session.close();
         	String errormessage = "Les mots de passes entrés ne correspondent pas !";
 			request.setAttribute("erreur", (String) errormessage);
 			this.getServletContext().getRequestDispatcher("/inscription.jsp").
@@ -95,11 +107,22 @@ public class InscriptionUtilisateur extends HttpServlet {
         	
         }
         
-        session.persist(connectedUser);
-        transaction.commit();
-        session.close();
-        sessionFactory.close();
+        UtilisateurDao utilisateurDao = new UtilisateurDao(session);
         
+		int cle;
+        
+		try {
+			
+			cle = utilisateurDao.save(connectedUser);
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			
+		}
+		
+		session.close();
+		
         HttpSession userSession = request.getSession();
         
         ListePanier listepanier = new ListePanier();

@@ -7,14 +7,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 @Entity
+@NamedQuery(
+	name="findByUserId",
+	query="SELECT c FROM Commande c WHERE c.utilisateur.identifiant = :id"
+)
 public class Commande {
 	
 	@Id
 	@GeneratedValue (strategy=GenerationType.IDENTITY)
-	private int identifiant;
+	private Integer identifiant;
 	@OneToMany
 	private List<ArticleCommande> articles = new ArrayList<ArticleCommande>();
 	private int quantite;

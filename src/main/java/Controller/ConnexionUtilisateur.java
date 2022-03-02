@@ -1,8 +1,6 @@
 package Controller;
 
 import java.io.IOException;
-import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -10,13 +8,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.criterion.Restrictions;
-
 import Model.*;
+import Config.HibernateUtil;
+import DAO.UtilisateurDao;
 
 /**
  * Servlet implementation class connexionUtilisateur
@@ -59,21 +54,15 @@ public class ConnexionUtilisateur extends HttpServlet {
 		String password = request.getParameter("password");
 		String email = request.getParameter("email");
 		
-		Configuration configuration = new Configuration().configure();
-		SessionFactory sessionFactory = configuration.
-		buildSessionFactory();
-		Session session = sessionFactory.openSession();
+	    Session session = HibernateUtil.getSessionFactory().openSession();
+	    
+	    UtilisateurDao utilisateurDao = new UtilisateurDao(session);
 		
-		Criteria criteria = session.createCriteria(Utilisateur.class);
-		criteria = criteria.add(Restrictions.eq("email", email));
-		criteria = criteria.add(Restrictions.eq("password", password));
-		@SuppressWarnings("unchecked")
-		List<Utilisateur> listeUtilisateurs = (List<Utilisateur>) criteria.list();
+		Utilisateur utilisateur = utilisateurDao.connectUser(email, password);
 		
 		session.close();
-		sessionFactory.close();
 			
-		if(listeUtilisateurs.isEmpty()) {
+		if(utilisateur == null) {
 			
 			String errormessage = "Adresse e-mail ou mot de passe incorrect !";
 			request.setAttribute("erreur", (String) errormessage);
@@ -83,26 +72,24 @@ public class ConnexionUtilisateur extends HttpServlet {
 		}
 			
 		Utilisateur connectedUser = new Utilisateur();
-		
-		for(Utilisateur u : listeUtilisateurs) {
 			
-			connectedUser.setIdentifiant(u.getIdentifiant());
-			connectedUser.setNom(u.getNom());
-			connectedUser.setPrenom(u.getPrenom());
-			connectedUser.setEmail(u.getEmail());
-			connectedUser.setPrivileges(u.getPrivileges());
-			connectedUser.setAdresses(u.getAdresses());
-			break;
-			
-		}
+		connectedUser.setIdentifiant(utilisateur.getIdentifiant());
+		connectedUser.setNom(utilisateur.getNom());
+		connectedUser.setPrenom(utilisateur.getPrenom());
+		connectedUser.setEmail(utilisateur.getEmail());
+		connectedUser.setPrivileges(utilisateur.getPrivileges());
+		connectedUser.setAdresses(utilisateur.getAdresses());
 		
 		HttpSession userSession = request.getSession();
+		
 		ListePanier listepanier = new ListePanier();
 		userSession.setAttribute("listepanier", listepanier);
 		userSession.setAttribute("user", connectedUser);
+		
 		Cookie user = new Cookie("useremail", connectedUser.getEmail());
 		user.setHttpOnly(true);
 		user.setMaxAge(31536000);
+		
 		response.addCookie(user);
 		this.getServletContext().getRequestDispatcher("/AfficherListe").forward(request, response);
 		

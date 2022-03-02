@@ -8,13 +8,25 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 @Entity
+@NamedQueries({
+	@NamedQuery(
+		name="findByEmailAndPassword",
+		query="SELECT u FROM Utilisateur u WHERE u.email = :email and u.password = :password"
+	),
+	@NamedQuery(
+		name="findByEmail",
+		query="SELECT u FROM Utilisateur u WHERE u.email = :email"
+	)
+})
 public class Utilisateur {
 	@Id
 	@GeneratedValue (strategy=GenerationType.IDENTITY)
-	private int identifiant;
+	private Integer identifiant;
 	private String nom;
 	private String prenom;
 	private String password;

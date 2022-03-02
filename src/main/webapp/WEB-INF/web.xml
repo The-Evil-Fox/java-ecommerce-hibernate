@@ -76,6 +76,12 @@
   	<description></description>
   	<servlet-class>Controller.ModifierAdresse</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>ModifierMiseEnVente</servlet-name>
+  	<display-name>ModifierMiseEnVente</display-name>
+  	<description></description>
+  	<servlet-class>Controller.ModifierMiseEnVente</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>InscriptionUtilisateur</servlet-name>
   	<url-pattern>/InscriptionUtilisateur</url-pattern>
@@ -123,5 +129,9 @@
   <servlet-mapping>
   	<servlet-name>ModifierAdresse</servlet-name>
   	<url-pattern>/ModifierAdresse</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>ModifierMiseEnVente</servlet-name>
+  	<url-pattern>/ModifierMiseEnVente</url-pattern>
   </servlet-mapping>
 </web-app>

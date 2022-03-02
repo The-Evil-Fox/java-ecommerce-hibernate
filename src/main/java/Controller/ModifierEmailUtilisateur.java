@@ -7,9 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import Config.HibernateUtil;
+import DAO.UtilisateurDao;
 import Model.Utilisateur;
 
 /**
@@ -41,29 +40,39 @@ public class ModifierEmailUtilisateur extends HttpServlet {
 		
 			String nouvelleEmail = request.getParameter("email");
 			
-			Configuration configuration = new Configuration().configure();
-			SessionFactory sessionFactory = configuration.buildSessionFactory();
-			Session session = sessionFactory.openSession();
-			Transaction transaction = session.beginTransaction();
-			
 			HttpSession userSession = request.getSession();
 			
 			Utilisateur connectedUser = (Utilisateur) userSession.getAttribute("user");
 			
-			Utilisateur user = session.get(Utilisateur.class, connectedUser.getIdentifiant());
+			Session session = HibernateUtil.getSessionFactory().openSession();
 			
-			connectedUser.setEmail(nouvelleEmail);
-			user.setEmail(nouvelleEmail);
+			UtilisateurDao utilisateurDao = new UtilisateurDao(session);
 			
-			// Update dans la bdd
-			session.persist(user);
+			Utilisateur user = null;
 			
-			// Update de la session de l'utilisateur
-			userSession.setAttribute("user", connectedUser);
+			try {
+				
+				user = utilisateurDao.findById(connectedUser.getIdentifiant());
+				
+				if(user == null) {
+					
+					session.close();
+					this.getServletContext().getRequestDispatcher("/AfficherProfil").
+					forward(request, response);
+					
+				}
+				
+				connectedUser.setEmail(nouvelleEmail);
+				user.setEmail(nouvelleEmail);
+				utilisateurDao.save(user);
+				
+			} catch (Exception e) {
+				
+				e.printStackTrace();
 			
-			transaction.commit();
-	        session.close();
-	        sessionFactory.close();
+			}
+			
+			session.close();
 	        
 	        this.getServletContext().getRequestDispatcher("/AfficherProfil").
 			forward(request, response);

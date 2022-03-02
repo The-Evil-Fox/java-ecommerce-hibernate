@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import Config.HibernateUtil;
+import DAO.AdresseDao;
+import DAO.UtilisateurDao;
 import Model.Adresse;
 import Model.Utilisateur;
 
@@ -61,33 +61,63 @@ public class AjoutAdresse extends HttpServlet {
 			adresselivraison = false;
 		}
 		
-		Configuration configuration = new Configuration().configure();
-        SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-		
 		Adresse nouvelleAdresse = new Adresse(rue, cp, ville, adresselivraison);
 		
-		Utilisateur user = session.get(Utilisateur.class, connectedUser.getIdentifiant());
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		
-		for(Adresse a : user.getAdresses()) {
+		AdresseDao adresseDao = new AdresseDao(session);
+		
+		UtilisateurDao utilisateurDao = new UtilisateurDao(session);
+		
+		Utilisateur user = null;
+		
+		user = utilisateurDao.findById(connectedUser.getIdentifiant());
+		
+		if(user == null) {
 			
-			if(a.isAdresselivraison() == true) {
+			this.getServletContext().getRequestDispatcher("/AfficherProfil").
+			forward(request, response);
+			
+		}
+		
+		if(adresselivraison == true) {
+		
+			for(Adresse a : user.getAdresses()) {
 				
-				a.setAdresselivraison(false);
+				if(a.isAdresselivraison() == true) {
+					
+					a.setAdresselivraison(false);
+					
+				}
+				
+			}
+			
+			for(Adresse a : connectedUser.getAdresses()) {
+				
+				if(a.isAdresselivraison() == true) {
+					
+					a.setAdresselivraison(false);
+					
+				}
 				
 			}
 			
 		}
 		
-		connectedUser.addAdresse(nouvelleAdresse);
-        
-		session.persist(nouvelleAdresse);
-		session.persist(user);
+		try {
+			
+			connectedUser.addAdresse(nouvelleAdresse);
+			adresseDao.save(nouvelleAdresse);
+			utilisateurDao.save(user);
+			
+		} catch (Exception e) {
+			
+			// TODO Auto-generated catch block
+			
+			e.printStackTrace();
+		}
 		
-        transaction.commit();
-        session.close();
-        sessionFactory.close();
+		session.close();
         
         this.getServletContext().getRequestDispatcher("/AfficherProfil").
 		forward(request, response);

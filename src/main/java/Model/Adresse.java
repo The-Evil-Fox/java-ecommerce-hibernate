@@ -3,8 +3,13 @@ package Model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 
 @Entity
+@NamedQuery(
+	name="findByRue",
+	query="SELECT a FROM Adresse a WHERE a.rue = :rue"
+)
 public class Adresse {
 	
 	@Id

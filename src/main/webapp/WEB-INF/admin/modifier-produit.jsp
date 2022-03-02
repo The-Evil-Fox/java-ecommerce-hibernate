@@ -31,6 +31,10 @@
 				<label for="quantite">Quantite en stock:</label>
 				<input type="text" name="quantite" id="quantite" value="${ produit.getQuantitestock() }" required>
 			</div>
+			<div class="input-group-checkbox">
+				<label for="miseenvente">Mettre en vente</label>
+				<input type="checkbox" value="true" name="miseenvente" id="miseenvente" <c:if test="${produit.isEnvente() == true }"> checked </c:if>>
+			</div>
 			<input class="button-a" type="submit" value="Valider"/>
 		</form>
 	</div>

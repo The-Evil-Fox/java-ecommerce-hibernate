@@ -7,11 +7,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import Config.HibernateUtil;
+import DAO.ProduitDao;
 import Model.Produit;
 
 /**
@@ -35,19 +33,13 @@ public class AfficherListe extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		Configuration configuration = new Configuration().configure();
-		SessionFactory sessionFactory = configuration.
-		buildSessionFactory();
-		Session session = sessionFactory.openSession();
-		Transaction transaction = session.beginTransaction();
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		
-		Criteria criteria = session.createCriteria(Produit.class);
-		@SuppressWarnings("unchecked")
-		List<Produit> liste = (List<Produit>) criteria.list();
+		ProduitDao produitDao = new ProduitDao(session);
 		
-		transaction.commit();
+		List<Produit> liste = produitDao.findAll();
+		
 		session.close();
-		sessionFactory.close();
 		
         request.setAttribute("produits", liste);
         this.getServletContext().getRequestDispatcher("/WEB-INF/affichage-produits.jsp").

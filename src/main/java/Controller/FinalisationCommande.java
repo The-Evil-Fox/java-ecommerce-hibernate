@@ -7,17 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-
-import Model.Adresse;
-import Model.ArticleCommande;
-import Model.Commande;
-import Model.ListePanier;
-import Model.Panier;
-import Model.Produit;
-import Model.Utilisateur;
+import Config.HibernateUtil;
+import DAO.*;
+import Model.*;
 
 /**
  * Servlet implementation class FinalisationCommande
@@ -36,6 +28,7 @@ public class FinalisationCommande extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
@@ -45,73 +38,118 @@ public class FinalisationCommande extends HttpServlet {
 		Utilisateur connectedUser = (Utilisateur) userSession.getAttribute("user");
 		ListePanier listepanier = (ListePanier) userSession.getAttribute("listepanier");
 		
-		if(connectedUser.getAdresses().isEmpty()) {
+		if(listepanier.getListe().isEmpty()) {
 			
-			String errormessage = "Veuillez ajouter une adresse de livraison avant de finaliser votre commande !";
+			String errormessage = "Vous n'avez aucun article dans votre panier. Création d'une commande impossible !";
 			request.setAttribute("erreur", (String) errormessage);
 			this.getServletContext().getRequestDispatcher("/AffichePanier").
 			forward(request, response);
 			
-		}
+		} else {
 		
-		boolean adresseLivraisonIsSet = false;
-		
-		for(Adresse a : connectedUser.getAdresses()) {
-			
-			if(a.isAdresselivraison() == true) {
+			if(connectedUser.getAdresses().isEmpty()) {
 				
-				adresseLivraisonIsSet = true;
-				break;
+				String errormessage = "Veuillez ajouter une adresse de livraison avant de finaliser votre commande !";
+				request.setAttribute("erreur", (String) errormessage);
+				this.getServletContext().getRequestDispatcher("/AffichePanier").
+				forward(request, response);
+				
 			}
 			
+			boolean adresseLivraisonIsSet = false;
+			
+			for(Adresse a : connectedUser.getAdresses()) {
+				
+				if(a.isAdresselivraison() == true) {
+					
+					adresseLivraisonIsSet = true;
+					break;
+					
+				}
+				
+			}
+			
+			if(adresseLivraisonIsSet == false) {
+				
+				String errormessage = "Veuillez définir une adresse de livraison avant de finaliser votre commande !";
+				request.setAttribute("erreur", (String) errormessage);
+				this.getServletContext().getRequestDispatcher("/AffichePanier").
+				forward(request, response);
+				
+			}
+	        
+	        Commande commande = new Commande();
+	        commande.setPrixTotal(listepanier.getMontantTotal());
+	        commande.setQuantite(listepanier.getQuantiteTotale());
+	        
+	        Session session = HibernateUtil.getSessionFactory().openSession();
+			
+			ArticleCommandeDao articleCommandeDao = new ArticleCommandeDao(session);
+			UtilisateurDao utilisateurDao = new UtilisateurDao(session);
+			ProduitDao produitDao = new ProduitDao(session);
+			CommandeDao commandeDao = new CommandeDao(session);
+			
+			Utilisateur user = utilisateurDao.findById(connectedUser.getIdentifiant());
+			
+			connectedUser.addCommande(commande);
+			
+			try {
+				
+				commandeDao.save(commande);
+				utilisateurDao.save(user);
+				
+			} catch (Exception e) {
+				
+				e.printStackTrace();
+				
+			}
+			
+			Produit produitToUpdate = null;
+	        
+			for(Panier p : listepanier.getListe()) {
+				
+				try {
+					
+					ArticleCommande articleCommande = new ArticleCommande(commande, p.getProduit(), p.getQuantite(), p.getProduit().getPrix() * p.getQuantite());
+					
+					System.out.println(p.getProduit().getIdentifiant());
+					
+					produitToUpdate = produitDao.findById(p.getProduit().getIdentifiant());
+					
+					if(produitToUpdate == null) {
+						
+						session.close();
+						this.getServletContext().getRequestDispatcher("/AfficherProfil").
+						forward(request, response);
+						
+					}
+					
+					produitToUpdate.setQuantitestock(produitToUpdate.getQuantitestock() - p.getQuantite());
+					
+					System.out.println(produitToUpdate.toString());
+					
+					commande.addArticlesCommande(articleCommande);
+					
+					articleCommandeDao.save(articleCommande);
+					produitDao.save(produitToUpdate);
+					
+				} catch (Exception e) {
+					
+					e.printStackTrace();
+				
+				}
+				
+			}
+			
+	        session.close();
+			
+			ListePanier emptyPanier = new ListePanier();
+			userSession.setAttribute("listepanier", emptyPanier);
+			
+			this.getServletContext().getRequestDispatcher("/WEB-INF/validation-commande.jsp").forward(request, response);
+			
 		}
 		
-		if(adresseLivraisonIsSet == false) {
-			
-			String errormessage = "Veuillez définir une adresse de livraison avant de finaliser votre commande !";
-			request.setAttribute("erreur", (String) errormessage);
-			this.getServletContext().getRequestDispatcher("/AffichePanier").
-			forward(request, response);
-			
-		}
-		
-		Configuration configuration = new Configuration().configure();
-        SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        
-        Commande commande = new Commande();
-        commande.setPrixTotal(listepanier.getMontantTotal());
-        commande.setQuantite(listepanier.getQuantiteTotale());
-        
-		for(Panier p : listepanier.getListe()) {
-			
-			ArticleCommande articleCommande = new ArticleCommande(commande, p.getProduit(), p.getQuantite(), p.getProduit().getPrix() * p.getQuantite());
-			
-			Produit produitToUpdate = session.get(Produit.class, p.getProduit().getIdentifiant());
-			produitToUpdate.setQuantitestock(produitToUpdate.getQuantitestock() - p.getQuantite());
-			
-			commande.addArticlesCommande(articleCommande);
-			
-			session.persist(articleCommande);
-			session.persist(produitToUpdate);
-		}
-		
-		Utilisateur user = session.get(Utilisateur.class, connectedUser.getIdentifiant());
-		
-		connectedUser.addCommande(commande);
-        
-		session.persist(commande);
-        session.persist(user);
-        
-        transaction.commit();
-        session.close();
-        sessionFactory.close();
-		
-		ListePanier emptyPanier = new ListePanier();
-		userSession.setAttribute("listepanier", emptyPanier);
-		
-		this.getServletContext().getRequestDispatcher("/WEB-INF/validation-commande.jsp").forward(request, response);
 	}
 
 	/**

@@ -8,11 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import Config.HibernateUtil;
+import DAO.ProduitDao;
 import Model.ListePanier;
 import Model.Panier;
 import Model.Produit;
@@ -50,19 +48,11 @@ public class AjoutPanier extends HttpServlet {
 		
 		Produit produit = new Produit();
 		
-		Configuration configuration = new Configuration().configure();
-		SessionFactory sessionFactory = configuration.
-		buildSessionFactory();
-		Session session = sessionFactory.openSession();
-		Transaction transaction = session.beginTransaction();
+		Session session = HibernateUtil.getSessionFactory().openSession();
 		
-		Criteria criteria = session.createCriteria(Produit.class);
-		@SuppressWarnings("unchecked")
-		List<Produit> liste = (List<Produit>) criteria.list();
+		ProduitDao produitDao = new ProduitDao(session);
 		
-		transaction.commit();
-		session.close();
-		sessionFactory.close();
+		List<Produit> liste = produitDao.findAll();
 		
 		HttpSession userSession = request.getSession();
 		
@@ -74,6 +64,7 @@ public class AjoutPanier extends HttpServlet {
 				produit.setLibelle(liste.get(i).getLibelle());
 				produit.setCheminimage(liste.get(i).getCheminimage());
 				produit.setPrix(liste.get(i).getPrix());
+				produit.setEnvente(true);
 				
 			}
 			
@@ -93,37 +84,41 @@ public class AjoutPanier extends HttpServlet {
 			
 		}
 		
-		boolean alreadyExist = false;
+		if(produit.isEnvente() == true) {
 		
-		for(Panier p : listepanier.getListe()) {
+			boolean alreadyExist = false;
 			
-			if(p.getProduit().getLibelle().equals(panier.getProduit().getLibelle())) {
+			for(Panier p : listepanier.getListe()) {
 				
-				p.setQuantite(p.getQuantite() + 1);
-				alreadyExist = true;
+				if(p.getProduit().getLibelle().equals(panier.getProduit().getLibelle())) {
+					
+					p.setQuantite(p.getQuantite() + 1);
+					alreadyExist = true;
+					
+				}
 				
 			}
 			
+			if(alreadyExist == false) {
+				
+				listepanier.getListe().add(panier);
+				
+			}
+			
+			double montantTotal = 0;
+			int quantiteTotale = 0;
+			
+			for(Panier p : listepanier.getListe()) {
+				
+				montantTotal += p.getProduit().getPrix() * p.getQuantite();
+				quantiteTotale += p.getQuantite();
+				
+			}
+			
+			listepanier.setMontantTotal(montantTotal);
+			listepanier.setQuantiteTotale(quantiteTotale);
+			
 		}
-		
-		if(alreadyExist == false) {
-			
-			listepanier.getListe().add(panier);
-			
-		}
-		
-		double montantTotal = 0;
-		int quantiteTotale = 0;
-		
-		for(Panier p : listepanier.getListe()) {
-			
-			montantTotal += p.getProduit().getPrix() * p.getQuantite();
-			quantiteTotale += p.getQuantite();
-			
-		}
-		
-		listepanier.setMontantTotal(montantTotal);
-		listepanier.setQuantiteTotale(quantiteTotale);
 		
 		request.setAttribute("listepanier", listepanier);
         request.setAttribute("produits", liste);

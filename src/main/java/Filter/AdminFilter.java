@@ -1,11 +1,6 @@
 package Filter;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -13,17 +8,16 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import Model.Utilisateur;
 
 /**
  * Servlet Filter implementation class AdminFilter
  */
+@SuppressWarnings("serial")
 @WebFilter("/*")
 public class AdminFilter extends HttpFilter implements Filter {
        
@@ -57,14 +51,12 @@ public class AdminFilter extends HttpFilter implements Filter {
 		
 		// on r�ecup`ere le chemin demand�e par l�utilisateur
 		String chemin = req.getServletPath();
-		String chemin2 = req.getRequestURI();
-		String completeURL = req.getRequestURL().toString();
-		// on r�ecup`ere la m�ethode HTTP utilis�ee (GET ou POST)
-		String methode = req.getMethod();
 		
 		Utilisateur connectedUser = (Utilisateur) session.getAttribute("user");
 		
-		if(chemin.equals("/AjouterProduit") || chemin.equals("/AjoutProduit") || chemin.equals("/ModifierProduit") || chemin.equals("/ModificationProduit")) {
+		if(chemin.equals("/AjouterProduit") || chemin.equals("/AjoutProduit") 
+				|| chemin.equals("/ModifierProduit") || chemin.equals("/ModificationProduit") 
+				|| chemin.equals("/ModifierMiseEnVente")) {
 		
 			if(connectedUser == null) {
 				
