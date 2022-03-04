@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -18,6 +19,10 @@ public class Produit {   //classe public et non final
     private double    prix; // tous les champs sont private
     private int quantitestock;
     private boolean envente;
+    
+    @ManyToOne
+    private CategorieProduit categorie;
+    
     @OneToMany
     private List<ArticleCommande> articlesCommande;
     
@@ -85,6 +90,10 @@ public class Produit {   //classe public et non final
 
 	public void setEnvente(boolean envente) {
 		this.envente = envente;
+	}
+	
+	public void setCategorie(CategorieProduit c) {
+		this.categorie = c;
 	}
 
 	@Override

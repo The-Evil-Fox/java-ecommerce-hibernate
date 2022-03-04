@@ -54,9 +54,9 @@ public class AdminFilter extends HttpFilter implements Filter {
 		
 		Utilisateur connectedUser = (Utilisateur) session.getAttribute("user");
 		
-		if(chemin.equals("/AjouterProduit") || chemin.equals("/AjoutProduit") 
-				|| chemin.equals("/ModifierProduit") || chemin.equals("/ModificationProduit") 
-				|| chemin.equals("/ModifierMiseEnVente")) {
+		if(chemin.equals("/AjoutProduit") || chemin.equals("/ModifierProduit") 
+				|| chemin.equals("/ModificationProduit") || chemin.equals("/ModifierMiseEnVente") 
+				|| chemin.equals("AjouterCategorie")) {
 		
 			if(connectedUser == null) {
 				

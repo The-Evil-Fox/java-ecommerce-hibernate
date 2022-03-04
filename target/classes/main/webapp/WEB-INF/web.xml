@@ -82,6 +82,12 @@
   	<description></description>
   	<servlet-class>Controller.ModifierMiseEnVente</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>AjouterCategorie</servlet-name>
+  	<display-name>AjouterCategorie</display-name>
+  	<description></description>
+  	<servlet-class>Controller.AjouterCategorie</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>InscriptionUtilisateur</servlet-name>
   	<url-pattern>/InscriptionUtilisateur</url-pattern>
@@ -133,5 +139,9 @@
   <servlet-mapping>
   	<servlet-name>ModifierMiseEnVente</servlet-name>
   	<url-pattern>/ModifierMiseEnVente</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>AjouterCategorie</servlet-name>
+  	<url-pattern>/AjouterCategorie</url-pattern>
   </servlet-mapping>
 </web-app>

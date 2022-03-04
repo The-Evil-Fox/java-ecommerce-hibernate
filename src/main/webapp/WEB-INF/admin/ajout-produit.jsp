@@ -24,6 +24,15 @@
 				<input type="text" name="cheminimage" id="cheminimage" required>
 			</div>
 			<div class="input-group">
+				<label for="categorie">Categorie:</label>
+				<select name="categorie" id="categorie" required>
+					<option value=""></option>
+					<c:forEach items="${categories}" var="categorie" varStatus="status">
+						<option value="<c:out value="${categorie.getIdentifiant()}" />"><c:out value="${categorie.getCategorie()}" /></option>
+					</c:forEach>
+				</select>
+			</div>
+			<div class="input-group">
 				<label for="prix">Prix de vente unitaire:</label>
 				<input type="text" name="prix" id="prix" required>
 			</div>

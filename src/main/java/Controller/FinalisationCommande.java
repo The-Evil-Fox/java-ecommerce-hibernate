@@ -112,8 +112,6 @@ public class FinalisationCommande extends HttpServlet {
 					
 					ArticleCommande articleCommande = new ArticleCommande(commande, p.getProduit(), p.getQuantite(), p.getProduit().getPrix() * p.getQuantite());
 					
-					System.out.println(p.getProduit().getIdentifiant());
-					
 					produitToUpdate = produitDao.findById(p.getProduit().getIdentifiant());
 					
 					if(produitToUpdate == null) {
@@ -125,8 +123,6 @@ public class FinalisationCommande extends HttpServlet {
 					}
 					
 					produitToUpdate.setQuantitestock(produitToUpdate.getQuantitestock() - p.getQuantite());
-					
-					System.out.println(produitToUpdate.toString());
 					
 					commande.addArticlesCommande(articleCommande);
 					

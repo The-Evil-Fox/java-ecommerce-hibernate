@@ -13,7 +13,8 @@
 	     <button class="dropbtn">Administration
 	     </button>
 	     <div class="dropdown-content">
-	       <a href="AjouterProduit">Ajout produit</a>
+	       <a href="AjoutProduit">Ajout produit</a>
+	       <a href="AjouterCategorie">Ajout categorie</a>
 	     </div>
 	   </div>
    </c:if>

@@ -19,6 +19,7 @@
 	        <mapping class="Model.ArticleCommande"/>
 	        <mapping class="Model.Commande"/>
 	        <mapping class="Model.Utilisateur"/>
+	        <mapping class="Model.CategorieProduit"/>
 	        
 	</session-factory>
 </hibernate-configuration>

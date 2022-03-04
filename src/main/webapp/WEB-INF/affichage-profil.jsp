@@ -77,7 +77,7 @@
 					<input class="button-a" type="submit" value="Confirmer"/>
 				</div>
 			</form>
-			<c:if test="${!user.getAdresses().isEmpty() && user.getAdresses().size() >= 1}">
+			<c:if test="${!user.getAdresses().isEmpty() && user.getAdresses().size() > 1}">
 				<button class="button-a button-adresse" onclick="showForm('modif-adresselivraison')">Définir une adresse de livraison</button>
 				<form id="modif-adresselivraison" action="ModifierAdresse" method="POST">
 					<input type="hidden" name="action" id="action" value="setAdresseLivraison">
@@ -94,12 +94,14 @@
 					</div>
 					<input class="button-a" type="submit" value="Confirmer"/>
 				</form>
+			</c:if>
+			<c:if test="${!user.getAdresses().isEmpty() && user.getAdresses().size() >= 1}">
 				<button class="button-a button-adresse" onclick="showForm('supp-adresselivraison')">Supprimer une adresse de livraison</button>
 				<form id="supp-adresselivraison" action="ModifierAdresse" method="POST">
 					<input type="hidden" name="action" id="action" value="delete">
 					<div class="input-group">
 						<label for="rue">Adresse:</label>
-						<select id="adresse" name="adresse">
+						<select id="adresse" name="adresse" required>
 							<option value="" selected></option>
 							<c:forEach  items="${user.getAdresses()}" var="adresse" varStatus="status">
 									<option value="<c:out value="${adresse.getRue()}" />"><c:out value="${adresse.getRue()}" /> <c:out value="${adresse.getCodePostal()}" /> <c:out value="${adresse.getVille()}" /></option>
