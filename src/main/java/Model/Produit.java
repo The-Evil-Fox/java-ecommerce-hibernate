@@ -7,9 +7,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 @Entity
+@NamedQuery(
+	name="findByPrice",
+	query="SELECT p FROM Produit p WHERE p.prix > :minimum AND p.prix < :maximum"
+)
 public class Produit {   //classe public et non final
 	@Id
 	@GeneratedValue (strategy=GenerationType.IDENTITY)
@@ -26,7 +31,7 @@ public class Produit {   //classe public et non final
     @OneToMany
     private List<ArticleCommande> articlesCommande;
     
-	public Produit(int identifiant, String libelle, String cheminimage, double prix, int quantitestock, boolean envente) {
+	public Produit(Integer identifiant, String libelle, String cheminimage, double prix, int quantitestock, boolean envente) {
 		super();
 		this.identifiant = identifiant;
 		this.libelle = libelle;
@@ -39,12 +44,12 @@ public class Produit {   //classe public et non final
     public Produit() {
     	super();
     }
-
-	public int getIdentifiant() {
-		return identifiant;
-	}
-
-	public void setIdentifiant(int identifiant) {
+    
+    public Integer getIdentifiant() {
+    	return this.identifiant;
+    }
+    
+    public void setIdentifiant(Integer identifiant) {
 		this.identifiant = identifiant;
 	}
 
@@ -74,10 +79,6 @@ public class Produit {   //classe public et non final
 
 	public void setQuantitestock(int quantitestock) {
 		this.quantitestock = quantitestock;
-	}
-
-	public void setIdentifiant(Integer identifiant) {
-		this.identifiant = identifiant;
 	}
 
 	public void setPrix(double prix) {

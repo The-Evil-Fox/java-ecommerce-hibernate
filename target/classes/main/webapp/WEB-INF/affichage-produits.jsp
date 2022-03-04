@@ -17,6 +17,20 @@
 			<%@include file="../templates/navbar.jsp" %>
 		</c:otherwise>		
 	</c:choose>
+	<form id="filtre-catalogue" method="post" action="AfficherListe">
+		<label for="categorie" class="categorie-label">Categorie:</label>
+		<select id="categorie" name="categorie">
+			<option value=""></option>
+			<c:forEach items="${categories}" var="categorie" varStatus="status">
+				<option value="<c:out value="${ categorie.getIdentifiant() }" />"><c:out value="${ categorie.getCategorie() }" /></option>
+			</c:forEach>
+		</select>
+		<label for="minimum">Prix minimum:</label>
+		<input type="text" name="minimum" id="minimum">
+		<label for="maximum">Prix maximum:</label>
+		<input type="text" name="maximum" id="maximum">
+		<input type="submit" class="button-a" value="Filtrer">
+	</form>
 	<div id="produits-liste">
 		<c:set var="compteur" value="${1}" scope="page"/>
 		<c:forEach items="${ produits }" var="produit" varStatus="status">

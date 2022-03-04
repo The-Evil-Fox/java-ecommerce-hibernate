@@ -166,6 +166,20 @@ input:focus {
 	font-weight: bold;
 }
 
+#filtre-catalogue {
+    text-align: left;
+    color: #333;
+    background-color: #f2f2f2;
+}
+
+#filtre-catalogue .categorie-label {
+	margin-left: 1.5vw;
+}
+
+#filtre-catalogue input, #filtre-catalogue select {
+	margin-right: 2vw;
+}
+
 #produits-liste {
 	margin: 10vh 0;
 }
@@ -356,12 +370,16 @@ input[type=submit] {
     color: #333;
 }
 
-#ajout-adresse input[type=submit], #modif-nom input[type=submit], #modif-prenom input[type=submit], #modif-email input[type=submit], #modif-adresselivraison input[type=submit], #supp-adresselivraison input[type=submit] {
+#ajout-adresse input[type=submit], #modif-nom input[type=submit], #modif-prenom input[type=submit], 
+#modif-email input[type=submit], #modif-adresselivraison input[type=submit], #supp-adresselivraison input[type=submit],
+#filtre-catalogue input[type=submit] {
 	background-color: #333;
     color: #f2f2f2;
 }
 
-#ajout-adresse input[type=submit]:hover, #modif-nom input[type=submit]:hover, #modif-prenom input[type=submit]:hover, #modif-email input[type=submit]:hover, #modif-adresselivraison input[type=submit]:hover, #supp-adresselivraison input[type=submit]:hover {
+#ajout-adresse input[type=submit]:hover, #modif-nom input[type=submit]:hover, #modif-prenom input[type=submit]:hover, 
+#modif-email input[type=submit]:hover, #modif-adresselivraison input[type=submit]:hover, #supp-adresselivraison input[type=submit]:hover,
+#filtre-catalogue input[type=submit]:hover {
 	background-color: #333;
     color: #f2f2f2;
 }
@@ -404,7 +422,7 @@ input[type=submit] {
 	margin-top: 3vh;
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 1050px) {
    #home-link {
    	text-align: left;
    } 
@@ -414,6 +432,16 @@ input[type=submit] {
   .topnav a.icon {
     float: right;
     display: block;
+  }
+  #filtre-catalogue {
+  	display:flex;
+  	flex-direction: column;
+  	padding:2vh 0;
+  	text-align: center;
+  }
+  #filtre-catalogue input, #filtre-catalogue select {
+  	width: 25%;
+  	margin: 2vh auto;
   }
   .ligne-articles {
   	flex-direction: column;
